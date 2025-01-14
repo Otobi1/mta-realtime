@@ -1,0 +1,4 @@
+requests
+protobuf
+google-transit-gtfs-realtime-bindings
+confluent-kafka
