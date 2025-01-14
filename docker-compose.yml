@@ -7,6 +7,8 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
     ports:
       - "2181:2181"
+    networks:
+      - mta-stream-network
 
   kafka:
     image: bitnami/kafka:latest
@@ -19,6 +21,9 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     ports:
       - "9092:9092"
+    networks:
+      - mta-stream-network
+
   spark:
     image: bitnami/spark:latest
     depends_on:
@@ -40,3 +45,53 @@ services:
       - "8080:8080"
       - "7077:7077"
       - "4040:4040"
+    volumes:
+      - ./spark_jobs:/opt/spark/jobs
+      - ./python_app/jars:/opt/spark/jars
+    networks:
+      - mta-stream-network
+
+  postgres:
+    image: bitnami/postgresql:13
+    environment:
+      POSTGRESQL_USERNAME: ${POSTGRES_USERNAME}
+      POSTGRESQL_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRESQL_DATABASE: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    networks:
+      - mta-stream-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.2
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - mta-stream-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.8.2
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - mta-stream-network
+
+#  python-producer:
+#    build: ./producer
+#    depends_on:
+#      - kafka
+#    environment:
+#      - MTA_API_KEY=${MTA_API_KEY}
+
+networks:
+  mta-stream-network:
+    driver: bridge
