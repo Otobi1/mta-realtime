@@ -1,0 +1,82 @@
+
+id: "000001SI"
+trip_update {
+  trip {
+    trip_id: "099900_SI.N03R"
+    start_time: "16:39:46"
+    start_date: "20250114"
+    route_id: "SI"
+  }
+  stop_time_update {
+    arrival {
+      time: 1736892445
+    }
+    departure {
+      time: 1736892445
+    }
+    stop_id: "S24N"
+  }
+  stop_time_update {
+    arrival {
+      time: 1736892546
+    }
+    departure {
+      time: 1736892546
+    }
+    stop_id: "S25N"
+  }
+  stop_time_update {
+    arrival {
+      time: 1736892666
+    }
+    departure {
+      time: 1736892666
+    }
+    stop_id: "S26N"
+  }
+  stop_time_update {
+    arrival {
+      time: 1736892786
+    }
+    departure {
+      time: 1736892786
+    }
+    stop_id: "S27N"
+  }
+  stop_time_update {
+    arrival {
+      time: 1736892966
+    }
+    departure {
+      time: 1736892966
+    }
+    stop_id: "S28N"
+  }
+  stop_time_update {
+    arrival {
+      time: 1736893086
+    }
+    departure {
+      time: 1736893086
+    }
+    stop_id: "S29N"
+  }
+  stop_time_update {
+    arrival {
+      time: 1736893206
+    }
+    departure {
+      time: 1736893206
+    }
+    stop_id: "S30N"
+  }
+  stop_time_update {
+    arrival {
+      time: 1736894971
+    }
+    departure {
+      time: 1736894971
+    }
+    stop_id: "S31N"
+  }
+}
