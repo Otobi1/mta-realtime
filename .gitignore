@@ -1,3 +1,5 @@
 mtaenv
 .env
 data
+*.zip
+*.DS_Store
