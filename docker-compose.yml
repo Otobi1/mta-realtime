@@ -92,6 +92,19 @@ services:
 #    environment:
 #      - MTA_API_KEY=${MTA_API_KEY}
 
+  static_parser:
+    build: ./static_parser
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      - mta-stream-network
+
 networks:
   mta-stream-network:
     driver: bridge
