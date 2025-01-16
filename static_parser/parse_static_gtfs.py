@@ -31,8 +31,8 @@ def create_tables(conn):
             CREATE TABLE IF NOT EXISTS stops (
                 stop_id TEXT PRIMARY KEY,
                 stop_name TEXT,
-                stop_lat DOUBLE PRECISION,
-                stop_lon DOUBLE PRECISION,
+                stop_lat TEXT,
+                stop_lon TEXT,
                 location_type TEXT
             );
         """)
@@ -42,8 +42,7 @@ def create_tables(conn):
                 route_id TEXT,
                 service_id TEXT,
                 trip_headsign TEXT,
-                direction_id TEXT,
-                FOREIGN KEY (route_id) REFERENCES routes(route_id)
+                direction_id TEXT
             );
         """)
         cur.execute("""
@@ -52,9 +51,7 @@ def create_tables(conn):
                 arrival_time TEXT,
                 departure_time TEXT,
                 stop_id TEXT,
-                stop_sequence TEXT,
-                FOREIGN KEY (trip_id) REFERENCES trips(trip_id),
-                FOREIGN KEY (stop_id) REFERENCES stops(stop_id)
+                stop_sequence TEXT
             );
         """)
         cur.execute("""
@@ -90,8 +87,8 @@ def create_tables(conn):
         cur.execute("""
             CREATE TABLE IF NOT EXISTS shapes (
             shape_id TEXT,
-            shape_pt_lat DOUBLE PRECISION,
-            shape_pt_lon DOUBLE PRECISION,
+            shape_pt_lat TEXT,
+            shape_pt_lon TEXT,
             shape_pt_sequence TEXT
             );
     """)
@@ -217,7 +214,7 @@ def main():
     # Load transfers
     load_csv_to_db(
         conn,
-        f"{GTFS_DIR}/transfers",
+        f"{GTFS_DIR}/transfers.txt",
         table_name="transfers",
         columns=["from_stop_id", "to_stop_id", "transfer_type", "min_transfer_time"]
     )
