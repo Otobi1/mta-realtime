@@ -3,3 +3,5 @@ mtaenv
 data
 *.zip
 *.DS_Store
+*.log
+gtfs_subway

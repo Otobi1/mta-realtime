@@ -1,4 +1,7 @@
 requests
 protobuf
+googleapis-common-protos
 google-transit-gtfs-realtime-bindings
-confluent-kafka
+kafka-python
+sqlalchemy
+psycopg2-binary
