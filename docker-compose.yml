@@ -28,6 +28,8 @@ services:
     image: bitnami/spark:latest
     depends_on:
       - kafka
+      - postgres
+      - elasticsearch
     environment:
       - SPARK_MODE=master
       - SPARK_MASTER_HOST=spark
@@ -59,15 +61,24 @@ services:
       POSTGRESQL_DATABASE: ${POSTGRES_DB}
     ports:
       - "5432:5432"
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - mta-stream-network
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.8.2
+    container_name: elasticsearch
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -76,6 +87,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.8.2
+    container_name: kibana
     depends_on:
       - elasticsearch
     environment:
@@ -85,12 +97,23 @@ services:
     networks:
       - mta-stream-network
 
-#  python-producer:
-#    build: ./producer
-#    depends_on:
-#      - kafka
-#    environment:
-#      - MTA_API_KEY=${MTA_API_KEY}
+  producer:
+    build: ./producer
+    container_name: producer
+    depends_on:
+      - kafka
+      - postgres
+    environment:
+      - MTA_API_KEY=${MTA_API_KEY}
+      - KAFKA_BROKER=${KAFKA_BROKER}
+      - TOPIC_NAME=${TOPIC_NAME}
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+    volumes:
+      - ./static_data:/app/static_data
 
   static_parser:
     build: ./static_parser
@@ -102,8 +125,27 @@ services:
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - ./static_data:/app/static_data
     networks:
       - mta-stream-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    depends_on:
+      - postgres
+      - elasticsearch
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  esdata:
+  grafana_data:
 
 networks:
   mta-stream-network:
