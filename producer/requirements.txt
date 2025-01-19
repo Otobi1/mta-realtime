@@ -5,3 +5,4 @@ google-transit-gtfs-realtime-bindings
 kafka-python
 sqlalchemy
 psycopg2-binary
+pandas
